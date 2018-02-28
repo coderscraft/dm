@@ -3,7 +3,8 @@ library(tidyverse)
 library(rhandsontable)
 require(gridExtra)
 setwd('/Users/ravirane/Desktop/GMU/CS584/myWork/assignment1/data/fold')
-# Function to create Fast and Frugal Tree for given data and algo
+setwd('/Users/ravirane/Desktop/GMU/CS584/dm/task-1/data/Sequestered')
+# Function to create Fast and Frugal Tree for given train/test data and algo
 fast.frugal.tree <- function(trainFile, testFile, algo, info) {
   print(info)
   adult.train <- read.csv(file=trainFile, header=TRUE, sep=",")
@@ -18,6 +19,7 @@ fast.frugal.tree <- function(trainFile, testFile, algo, info) {
   print(adult.fft)
   adult.fft
 }
+
 # Creating model on fold
 fold1.ifan.fft <- fast.frugal.tree("fold1_train.csv", "fold1_test.csv", "ifan", 'Fold 1 FFT - Algo: ifan')
 fold2.ifan.fft <- fast.frugal.tree("fold2_train.csv", "fold2_test.csv", "ifan", 'Fold 2 FFT - Algo: ifan')
@@ -29,6 +31,15 @@ fold2.dfan.fft <- fast.frugal.tree("fold2_train.csv", "fold2_test.csv", "dfan", 
 fold3.dfan.fft <- fast.frugal.tree("fold3_train.csv", "fold3_test.csv", "dfan", 'Fold 3 FFT - Algo: dfan')
 fold4.dfan.fft <- fast.frugal.tree("fold4_train.csv", "fold4_test.csv", "dfan", 'Fold 4 FFT - Algo: dfan')
 fold5.dfan.fft <- fast.frugal.tree("fold5_train.csv", "fold5_test.csv", "dfan", 'Fold 5 FFT - Algo: dfan')
+
+Seq1.ifan.fft <- fast.frugal.tree("adult_300.csv", "100_S1.csv", "ifan", 'Sequestered 1 - Algo: ifan')
+Seq2.ifan.fft <- fast.frugal.tree("adult_300.csv", "100_S2.csv", "ifan", 'Sequestered 2 - Algo: ifan')
+Seq3.ifan.fft <- fast.frugal.tree("adult_300.csv", "100_S3.csv", "ifan", 'Sequestered 3 - Algo: ifan')
+Seq4.ifan.fft <- fast.frugal.tree("adult_300.csv", "100_S4.csv", "ifan", 'Sequestered 4 - Algo: ifan')
+Seq5.ifan.fft <- fast.frugal.tree("adult_300.csv", "100_S5.csv", "ifan", 'Sequestered 5 - Algo: ifan')
+
+#Seq6.ifan.fft <- fast.frugal.tree("adult_ds300_preprocessed.csv", "fold1_test.csv", "ifan", 'Sequestered 6 - Algo: ifan')
+
 # Plotting fold model tree
 plot(fold1.ifan.fft, data = "test")
 plot(fold2.ifan.fft, data = "test")
@@ -40,6 +51,14 @@ plot(fold2.dfan.fft, data = "test")
 plot(fold3.dfan.fft, data = "test")
 plot(fold4.dfan.fft, data = "test")
 plot(fold5.dfan.fft, data = "test")
+
+plot(Seq1.ifan.fft, data = "test")
+plot(Seq2.ifan.fft, data = "test")
+plot(Seq3.ifan.fft, data = "test")
+plot(Seq4.ifan.fft, data = "test")
+plot(Seq5.ifan.fft, data = "test")
+#plot(Seq6.ifan.fft, data = "test")
+
 
 folds <- c('Fold1', 'Fold2', 'Fold3', 'Fold4', 'Fold5' )
 #confusion matrix for fold_ifan
@@ -71,6 +90,22 @@ cm_fold_dfan$f <- round(2*cm_fold_dfan$recall*cm_fold_dfan$precision/(cm_fold_df
 cm_fold_dfan$sensitivity <- c(0.79, 0.90, 0.89, 0.83, 0.92)
 cm_fold_dfan$specificity <- c(0.79, 0.77, 0.67, 0.66, 0.72)
 rhandsontable(cm_fold_dfan, rowHeaders = NULL)
+
+sq <- c('Seq 1', 'Seq 2', 'Seq 3', 'Seq 4', 'Seq 5' )
+#confusion matrix for fold_ifan
+sqtp_ifan <- c(38, 22, 19, 20, 21 )
+sqfp_ifan <- c(12, 25, 30, 19, 23)
+sqtn_ifan <- c(41, 51, 46, 57, 53)
+sqfn_ifan <- c(9, 2, 5, 4, 3)
+
+sq_ifan = tibble(SQ= sq, TP = sqtp_ifan, TN = sqtn_ifan, FP = sqfp_ifan, FN = sqfn_ifan)
+sq_ifan$accuracy <- round((sq_ifan$TP + sq_ifan$TN)/(sq_ifan$TP + sq_ifan$TN + sq_ifan$FP + sq_ifan$FN), digits = 2)
+sq_ifan$precision <- round(sq_ifan$TP/(sq_ifan$TP + sq_ifan$FP), digits = 2)
+sq_ifan$recall <- round(sq_ifan$TP/(sq_ifan$TP + sq_ifan$FN), digits = 2)
+sq_ifan$f <- round(2*sq_ifan$recall*sq_ifan$precision/(sq_ifan$precision + sq_ifan$recall), digits = 2)
+sq_ifan$sensitivity <- c(0.75, 0.92, 0.79, 0.83, 0.88)
+sq_ifan$specificity <- c(0.76, 0.67, 0.61, 0.75, 0.70)
+rhandsontable(sq_ifan, rowHeaders = NULL)
 
 
 ## Gini
